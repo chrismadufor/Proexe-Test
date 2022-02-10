@@ -6,8 +6,8 @@ import { createUser } from "../store/users";
 
 function CreateUser() {
   const users = useSelector((state) => state.users);
+  let [errorMessage, setErrorMessage] = useState(null);
   let lastId = users[users.length - 1].id;
-  console.log(lastId);
 
   let [data, setData] = useState({
     name: "",
@@ -56,14 +56,17 @@ function CreateUser() {
     if (Object.keys(errors).length !== 0) return;
     if (name === "" || email === "") setEmptyFields(true);
     else {
-      UserService.createUser({ ...data, id: lastId + 1 })
+      let newUserId = lastId >= 10 ? lastId + 1 : 11;
+      UserService.createUser({ ...data, id: newUserId })
         .then(() => {
-          dispatch(createUser({ ...data, id: lastId + 1 }));
+          dispatch(createUser({ ...data, id: newUserId }));
           navigate("/");
         })
         .catch((err) => {
-          console.log(err);
-          navigate("/");
+          setErrorMessage("An error occured. Try again.");
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 3000);
         });
     }
     // make API call
@@ -81,6 +84,11 @@ function CreateUser() {
 
   return (
     <div className="p-10 flex items-center justify-center">
+      {errorMessage ? (
+        <p className="fixed bottom-0 right-0 px-5 py-3 bg-red-500 text-white text-center">
+          {errorMessage}
+        </p>
+      ) : null}
       <div className="bg-white py-8 px-5 rounded-lg shadow w-full max-w-3xl">
         <div className="flex items-center justify-between mb-5">
           <h3 className="font-semibold text-2xl">Create New User</h3>
