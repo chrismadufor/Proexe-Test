@@ -10,7 +10,6 @@ function DeleteConfirmationModal({ onClose, user }) {
   //  The API throws a bad request error when you try to delete a user with an ID above 10 because it has just 10 objects. That is why I put the dispatch code in the catch block for a seamless experience
 
   const onDeleteUser = (id) => {
-    console.log(id);
     UserService.deleteUser(id)
       .then((res) => {
         dispatch(deleteUser(id));

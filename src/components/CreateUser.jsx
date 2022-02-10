@@ -7,7 +7,7 @@ import { createUser } from "../store/users";
 function CreateUser() {
   const users = useSelector((state) => state.users);
   let [errorMessage, setErrorMessage] = useState(null);
-  let lastId = users[users.length - 1].id;
+  let lastId = users.length === 0 ? 10 : users[users.length - 1].id;
 
   let [data, setData] = useState({
     name: "",
