@@ -10,6 +10,7 @@ function UpdateUser() {
   let [data, setData] = useState({});
   let [errors, setErrors] = useState({});
   let [emptyFields, setEmptyFields] = useState(false);
+  let [errorMessage, setErrorMessage] = useState(null);
   const { name, email } = data;
 
   const validateProperty = ({ name, value }) => {
@@ -46,6 +47,8 @@ function UpdateUser() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  //  The API throws a bad request error when you try to update a user with an ID above 10 because it has just 10 objects. That is why I put the dispatch code in the catch block for a seamless experience
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (Object.keys(errors).length !== 0) return;
@@ -57,8 +60,16 @@ function UpdateUser() {
           navigate("/");
         })
         .catch((err) => {
+          if (params.id > 10) {
+            dispatch(updateUser({ id: params.id, data }));
+            navigate("/");
+            return;
+          }
           console.log(err);
-          navigate("/");
+          setErrorMessage("An error occured. Try again.");
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 3000);
         });
     }
   };
@@ -85,6 +96,11 @@ function UpdateUser() {
 
   return (
     <div className="p-10 flex items-center justify-center">
+      {errorMessage ? (
+        <p className="fixed bottom-0 right-0 px-5 py-3 bg-red-500 text-white text-center">
+          {errorMessage}
+        </p>
+      ) : null}
       <div className="bg-white py-8 px-5 rounded-lg shadow w-full max-w-3xl">
         <div className="flex items-center justify-between mb-5">
           <h3 className="font-semibold text-2xl">Update User</h3>

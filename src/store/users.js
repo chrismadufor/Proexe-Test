@@ -17,7 +17,7 @@ const slice = createSlice({
       state.users.push(payload);
     },
     updateUser: (state, { payload }) => {
-      const index = state.users.findIndex((user) => user.id == payload.id);
+      const index = state.users.findIndex((user) => user.id === +payload.id);
       state.users[index].name = payload.data.name;
       state.users[index].email = payload.data.email;
     },
